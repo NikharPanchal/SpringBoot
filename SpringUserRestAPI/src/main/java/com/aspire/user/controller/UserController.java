@@ -16,18 +16,22 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.aspire.user.config.JwtAuthentication;
 import com.aspire.user.service.UserService;
 import com.aspire.user.utils.Users;
 
 @RestController
 @CrossOrigin
-public class UserController {
+public class UserController { 
 
 	@Autowired
-	UserService userService;
-	
+	UserService userService; 
+		
 //	@Autowired
 //	private BCryptPasswordEncoder passwordEncoder;
+	
+	@Autowired
+	private JwtAuthentication authenticate;
 
 	@GetMapping("/home")
 	public String home() {
@@ -41,13 +45,13 @@ public class UserController {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
 		return ResponseEntity.ok().body(userList);
-	}
+	} 
 
 	@PostMapping("/save")
 	public Users saveUser(@RequestBody Users user) {
 //		user.setUserPassword(this.passwordEncoder.encode(user.getUserPassword()));
-		userService.saveUserDetails(user);
-		return user;
+		Users userdata=userService.saveUserDetails(user);
+		return userdata;  
 	}
 
 	@DeleteMapping("/user/{id}")

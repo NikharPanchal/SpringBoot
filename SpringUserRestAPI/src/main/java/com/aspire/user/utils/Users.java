@@ -16,7 +16,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 @Entity
 @Table
 public class Users {
-
+ 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column
