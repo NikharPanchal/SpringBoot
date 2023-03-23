@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.aspire.user.config.JwtAuthentication;
 import com.aspire.user.service.UserService;
 import com.aspire.user.utils.Users;
 
@@ -30,8 +29,6 @@ public class UserController {
 //	@Autowired
 //	private BCryptPasswordEncoder passwordEncoder;
 	
-	@Autowired
-	private JwtAuthentication authenticate;
 
 	@GetMapping("/home")
 	public String home() {
@@ -41,6 +38,7 @@ public class UserController {
 	@GetMapping("/users")
 	public ResponseEntity<List<Users>> getUsers() {
 		List<Users> userList = userService.getAllUsers();
+		System.out.println(userList);
 		if(userList.size()<0) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
