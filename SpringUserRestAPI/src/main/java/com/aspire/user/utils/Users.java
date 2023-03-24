@@ -28,6 +28,7 @@ public class Users {
 	@Column
 	private String userAddress;
 	@Temporal(TemporalType.DATE)
+	@JsonFormat(pattern = "dd-MM-yyyy")
 	@Column
 	private Date dob;
 

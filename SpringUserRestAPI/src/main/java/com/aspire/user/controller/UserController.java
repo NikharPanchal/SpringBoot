@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.aspire.user.config.SecurityConfig;
 import com.aspire.user.service.UserService;
 import com.aspire.user.utils.Users;
 
@@ -26,9 +28,11 @@ public class UserController {
 	@Autowired
 	UserService userService; 
 		
-//	@Autowired
-//	private BCryptPasswordEncoder passwordEncoder;
+	@Autowired
+	private BCryptPasswordEncoder passwordEncoder;
 	
+	@Autowired
+	private SecurityConfig securityConfig;
 
 	@GetMapping("/home")
 	public String home() {
@@ -47,7 +51,7 @@ public class UserController {
 
 	@PostMapping("/save")
 	public Users saveUser(@RequestBody Users user) {
-//		user.setUserPassword(this.passwordEncoder.encode(user.getUserPassword()));
+		user.setUserPassword(this.securityConfig.passwordEncoder().encode(user.getUserPassword()));
 		Users userdata=userService.saveUserDetails(user);
 		return userdata;  
 	}
