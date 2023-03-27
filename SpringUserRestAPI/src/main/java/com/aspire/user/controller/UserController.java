@@ -1,12 +1,18 @@
 package com.aspire.user.controller;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,8 +23,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.aspire.user.config.JwtAuthentication;
 import com.aspire.user.config.SecurityConfig;
 import com.aspire.user.service.UserService;
+import com.aspire.user.utils.JwtToken;
 import com.aspire.user.utils.Users;
 
 @RestController
@@ -26,13 +34,44 @@ import com.aspire.user.utils.Users;
 public class UserController { 
 
 	@Autowired
-	UserService userService; 
+	private AuthenticationManager authenticationManager;
+	
+	@Autowired
+	private UserService userService; 
 		
 	@Autowired
-	private BCryptPasswordEncoder passwordEncoder;
+	private JwtAuthentication authentication;
+	
+//	@Autowired
+//	private BCryptPasswordEncoder passwordEncoder;
 	
 	@Autowired
 	private SecurityConfig securityConfig;
+	
+//	Collection<SimpleGrantedAuthority> oldAuthorities = (Collection<SimpleGrantedAuthority>)SecurityContextHolder.getContext().getAuthentication().getAuthorities();
+//	SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_ANOTHER");
+//	List<SimpleGrantedAuthority> updatedAuthorities = new ArrayList<SimpleGrantedAuthority>();
+//	updatedAuthorities.add(authority);
+//	updatedAuthorities.addAll(oldAuthorities);
+//	
+	@PostMapping("/token")
+	public ResponseEntity<?> generateToken(@RequestBody JwtToken token) throws Exception{
+		String tokenString=null;
+		System.out.println(token.getUserName());
+		System.out.println(token.getUserpassword());
+		try {
+			authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(token.getUserName(),token.getUserpassword()));	
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+//			throw new Exception("Bad credential");
+		}
+		UserDetails userdetails=userService.loadUserByUsername(token.getUserName());
+		System.out.println(userdetails);
+		
+		tokenString=authentication.generateToken(userdetails);
+		return ResponseEntity.ok().body(tokenString);	
+	}
 
 	@GetMapping("/home")
 	public String home() {

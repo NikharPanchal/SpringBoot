@@ -31,6 +31,9 @@ public class Users {
 	@JsonFormat(pattern = "dd-MM-yyyy")
 	@Column
 	private Date dob;
+	
+	private String role;
+	
 
 	@Override
 	public String toString() {
@@ -66,6 +69,12 @@ public class Users {
 	}
 	public void setDob(Date dob) {
 		this.dob = dob;
+	}
+	public String getRole() {
+		return role;
+	}
+	public void setRole(String role) {
+		this.role = "User";
 	}
 	
 }
