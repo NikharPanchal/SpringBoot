@@ -55,7 +55,7 @@ public class UserController {
 //	List<SimpleGrantedAuthority> updatedAuthorities = new ArrayList<SimpleGrantedAuthority>();
 //	updatedAuthorities.add(authority);
 //	updatedAuthorities.addAll(oldAuthorities);
-//	
+	
 	@PostMapping("/token")
 	public ResponseEntity<?> generateToken(@RequestBody JwtToken token) throws Exception{
 		
@@ -66,7 +66,7 @@ public class UserController {
 			
 		}catch(Exception e) {
 			e.printStackTrace();
-			throw new Exception("Bad credential");
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Wrong credentials");
 		}
 		UserDetails userdetails=userService.loadUserByUsername(token.getUserName());
 		System.out.println(userdetails);

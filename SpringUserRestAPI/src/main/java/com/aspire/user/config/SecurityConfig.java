@@ -43,7 +43,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 //		http.authorizeHttpRequests().anyRequest().authenticated().and().httpBasic();
-		http.authorizeHttpRequests().antMatchers("/**").permitAll();
+		http.authorizeHttpRequests().antMatchers("/users","/token","/save","/h2-console/**","/user/*").permitAll().anyRequest().authenticated().and().httpBasic();
 //		http.csrf().disable().cors().disable().authorizeRequests().antMatchers("/token").permitAll().anyRequest().authenticated().and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 		http.csrf().disable();
 		http.headers().frameOptions().disable();
@@ -51,7 +51,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-//		auth.inMemoryAuthentication().withUser("admin").password(this.passwordEncoder().encode("admin")).roles("USER");
+		auth.inMemoryAuthentication().withUser("admin").password(this.passwordEncoder().encode("admin")).roles("USER");
 		auth.userDetailsService(userService)
 		.passwordEncoder(passwordEncoder());
 	}
