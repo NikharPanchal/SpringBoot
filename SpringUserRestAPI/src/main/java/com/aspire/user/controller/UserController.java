@@ -14,6 +14,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +28,7 @@ import com.aspire.user.config.JwtAuthentication;
 import com.aspire.user.config.SecurityConfig;
 import com.aspire.user.service.UserService;
 import com.aspire.user.utils.JwtToken;
+import com.aspire.user.utils.MyToken;
 import com.aspire.user.utils.Users;
 
 @RestController
@@ -42,8 +44,8 @@ public class UserController {
 	@Autowired
 	private JwtAuthentication authentication;
 	
-//	@Autowired
-//	private BCryptPasswordEncoder passwordEncoder;
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 	
 	@Autowired
 	private SecurityConfig securityConfig;
@@ -56,7 +58,7 @@ public class UserController {
 //	
 	@PostMapping("/token")
 	public ResponseEntity<?> generateToken(@RequestBody JwtToken token) throws Exception{
-		String tokenString=null;
+		
 		System.out.println(token.getUserName());
 		System.out.println(token.getUserpassword());
 		try {
@@ -64,13 +66,13 @@ public class UserController {
 			
 		}catch(Exception e) {
 			e.printStackTrace();
-//			throw new Exception("Bad credential");
+			throw new Exception("Bad credential");
 		}
 		UserDetails userdetails=userService.loadUserByUsername(token.getUserName());
 		System.out.println(userdetails);
 		
-		tokenString=authentication.generateToken(userdetails);
-		return ResponseEntity.ok().body(tokenString);	
+		String mytoken =authentication.generateToken(userdetails);
+		return ResponseEntity.ok().body(new MyToken(mytoken));	
 	}
 
 	@GetMapping("/home")
@@ -90,7 +92,7 @@ public class UserController {
 
 	@PostMapping("/save")
 	public Users saveUser(@RequestBody Users user) {
-		user.setUserPassword(this.securityConfig.passwordEncoder().encode(user.getUserPassword()));
+		user.setUserPassword(passwordEncoder.encode(user.getUserPassword()));
 		Users userdata=userService.saveUserDetails(user);
 		return userdata;  
 	}

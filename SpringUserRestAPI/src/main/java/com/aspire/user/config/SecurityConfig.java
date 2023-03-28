@@ -13,6 +13,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.aspire.user.service.UserService;
 import com.aspire.user.utils.Users;
@@ -35,23 +36,24 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //	}
 
 	@Bean
-	public BCryptPasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder(10);
+	public PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
 	}
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 //		http.authorizeHttpRequests().anyRequest().authenticated().and().httpBasic();
-		http.authorizeHttpRequests().antMatchers("/users","/save","/token").permitAll().anyRequest().authenticated();
+		http.authorizeHttpRequests().antMatchers("/**").permitAll();
 //		http.csrf().disable().cors().disable().authorizeRequests().antMatchers("/token").permitAll().anyRequest().authenticated().and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 		http.csrf().disable();
-		
+		http.headers().frameOptions().disable();
 	}
 
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 //		auth.inMemoryAuthentication().withUser("admin").password(this.passwordEncoder().encode("admin")).roles("USER");
-		auth.userDetailsService(userService);
+		auth.userDetailsService(userService)
+		.passwordEncoder(passwordEncoder());
 	}
 
 	@Bean

@@ -51,23 +51,23 @@ public class UserService implements UserDetailsService {
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-//		try {
-////			System.out.println(user);
-//			Users user= repository.findByUserName(username);
+		try {
 //			System.out.println(user);
-//			return new User(user.getUserName(),user.getUserPassword(),new ArrayList<>());
-//		}
-//		catch(UsernameNotFoundException e) {
-//			e.printStackTrace();
-//		}
-//		return null;
-		
-		if(username.equals("nikhar")) {
-			return new User("nikhar","panchal",new ArrayList<>());
-		}else
-		{
-			throw new UsernameNotFoundException("user not found");
+			Users user= repository.findByUserName(username);
+			System.out.println(user);
+			return new User(user.getUserName(),user.getUserPassword(),new ArrayList<>());
 		}
+		catch(UsernameNotFoundException e) {
+			e.printStackTrace();
+		}
+		return null;
+		
+//		if(username.equals("nikhar")) {
+//			return new User("nikhar","panchal",new ArrayList<>());
+//		}else
+//		{
+//			throw new UsernameNotFoundException("user not found");
+//		}
 	}
 
 }
