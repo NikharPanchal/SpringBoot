@@ -1,5 +1,9 @@
 package com.aspire.user.config;
 
+import java.util.Arrays;
+import java.util.Collections;
+
+import org.apache.catalina.filters.CorsFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,6 +14,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 
 import com.aspire.user.service.UserService;
 
@@ -42,20 +48,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //		http.headers().frameOptions().disable(); 
 
 		
-		http.authorizeHttpRequests().antMatchers("/users","/token","/save","/user/*").permitAll().anyRequest().authenticated().and().httpBasic();
-		http.csrf().disable();
+//		http.authorizeHttpRequests().antMatchers("/users","/token","/save","/user/*").permitAll().anyRequest().authenticated().and().httpBasic();
+//		http.csrf().disable();
 
 		
 //		http.csrf().disable().cors().disable().authorizeRequests().antMatchers("/token").permitAll().anyRequest().authenticated().and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-//		http
-//			.csrf()
-//			.disable()
-//			.authorizeRequests()
-//			.anyRequest()
-//			.authenticated()
-//			.and()
-//			.httpBasic();
+		http			
+		
+			.csrf()
+			.disable()
+			.authorizeRequests()
+			.anyRequest()
+			.authenticated()
+			.and()
+			.httpBasic();
 		
 	}
 
@@ -71,5 +78,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	public AuthenticationManager authenticationManagerBean() throws Exception {
 		return super.authenticationManagerBean();
 	}
+	
+//	@Bean
+//	public CorsFilter corsFilter() {
+//	    final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+//	    final CorsConfiguration config = new CorsConfiguration();
+//	    config.setAllowCredentials(true);
+//	    // Don't do this in production, use a proper list  of allowed origins
+//	    config.setAllowedOrigins(Collections.singletonList("*"));
+//	    config.setAllowedHeaders(Arrays.asList("Origin", "Content-Type", "Accept"));
+//	    config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "OPTIONS", "DELETE", "PATCH"));
+//	    source.registerCorsConfiguration("/**", config);
+//	    return new CorsFilter();
+//	}
 
 }
