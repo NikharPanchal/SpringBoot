@@ -1,9 +1,7 @@
 package com.aspire.user.config;
 
 import java.util.Arrays;
-import java.util.Collections;
 
-import org.apache.catalina.filters.CorsFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,7 +13,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.aspire.user.service.UserService;
 
@@ -54,17 +52,30 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		
 //		http.csrf().disable().cors().disable().authorizeRequests().antMatchers("/token").permitAll().anyRequest().authenticated().and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-		http			
-		
-			.csrf()
-			.disable()
-			.authorizeRequests()
-			.anyRequest()
-			.authenticated()
-			.and()
-			.httpBasic();
+		        http
+		            .cors().configurationSource(corsConfigurationSource())
+		            .and()
+		            .csrf().disable()	
+		            .authorizeRequests()
+		            .anyRequest().authenticated()
+		            .and()
+		            .httpBasic();
 		
 	}
+	
+	 @Bean
+	    public UrlBasedCorsConfigurationSource corsConfigurationSource() {
+	        CorsConfiguration configuration = new CorsConfiguration();
+	        configuration.setAllowedOriginPatterns(Arrays.asList("http://localhost:4200", "http://localhost:8080")); // set allowed origin patterns
+	        configuration.addAllowedMethod("*"); // allow all HTTP methods
+	        configuration.addAllowedHeader("*"); // allow all headers
+	        configuration.setAllowCredentials(true); // allow sending credentials (e.g., cookies)
+
+	        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+	        source.registerCorsConfiguration("/**", configuration);
+	        return source;
+	    }
+	
 
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -91,5 +102,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //	    source.registerCorsConfiguration("/**", config);
 //	    return new CorsFilter();
 //	}
-
+	
+	
+	
+	
 }
